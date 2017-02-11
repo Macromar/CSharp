@@ -2,6 +2,8 @@
 using OpenQA.Selenium;
 using NUnit.Framework;
 using OpenQA.Selenium.Support.UI;
+using System.Threading;
+using OpenQA.Selenium.Support.PageObjects;
 
 namespace TenBet
 {
@@ -38,7 +40,7 @@ namespace TenBet
             mainPage.AddRandomHighlightEvent(driver, wait10);
             mainPage.PlaceStake(driver, wait10 , stake);
              string result;
-             if (mainPage.WaitForStakeStatus(driver, wait10).Contains("accepted"))
+            if (mainPage.WaitForStakeStatus(driver, wait10).Contains("accepted"))
             {
                 if (mainPage.ChangedBalance(driver, wait10, action, sportBalance, stake) + stake == sportBalance)
                    result= "Pass. With accepted bet";
@@ -61,7 +63,11 @@ namespace TenBet
             stake = decimal.Parse(MainPage.conf.items["Stake"]);
             MainPage.Login(driver);
             decimal sportBalance = mainPage.GetBalance(driver, action, wait10);
-            mainPage.AddRandomHighlightEvent(driver, wait10);
+            while (true)
+            {
+                mainPage.AddRandomLiveEvent(driver, wait10);
+
+            }
             mainPage.PlaceStake(driver, wait10, stake);
             string result;
             if (mainPage.WaitForStakeStatus(driver, wait10).Contains("accepted"))
@@ -84,11 +90,34 @@ namespace TenBet
         [Test]
         public void BugFixing()
         {
-            string s = "#new_live_betting #live_betting_br_1 .live_betting_table tr";
-            //s = "#_me_highlights_" + rnd.Next(0, i) + ">td.bet_name>a:nth-child(" + rnd.Next(1, 2).ToString() + ")>span.num_right";
-            var elements = driver.FindElements(By.CssSelector(s));
+            string s;
+            PageFactory.InitElements(driver, betrally);
+            stake = decimal.Parse(MainPage.conf.items["Stake"]);
+            MainPage.Login(driver);
 
-//            if (conf.items.ContainsKey("Login"))
+            IJavaScriptExecutor js = (IJavaScriptExecutor) driver;
+          
+            while (true)
+            {
+
+                mainPage.AddRandomLiveEvent(driver, wait10);
+
+                var sd = betrally.betslipClose;
+                //        [FindsBy(How = How.CssSelector, Using = "#bet-slip-container > li[id^=sce] >img.close")]
+        ///                 public IWebElement betslipClose;
+
+       // var k = driver.FindElement(betrally.betslipCloseBy);
+                if (mainPage.IsElementPresentElement(driver, betrally.betslipOverlayBy ))
+                {
+                   var elements = js.ExecuteScript("arguments[0].click();", sd);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            ;
+
         }
 
 [TearDown]

@@ -1,8 +1,9 @@
 {
   "URL": "www.betrally.com",
-  "Login": "nikol4etorally2",
-  "Password": "nikol4etorally2",
+  "Login": "",
+  "Password": "",
   "LoginPopUp": "Yes",
   "Maximize": "Yes",
+  "stale": "nikol4etorally2",
   "Stake": "0.12"
 }

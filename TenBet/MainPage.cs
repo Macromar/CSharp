@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using NUnit.Framework;
 
 namespace TenBet
 {
@@ -68,7 +69,7 @@ namespace TenBet
         }
         public void AddRandomHighlightEvent(IWebDriver driver, WebDriverWait wait)
         {
-            wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("#_me_highlights_1>td.bet_name>a:nth-child(1)>span.num_right")));
+            wait.Until(ExpectedConditions.ElementIsVisible(betrally.highlightFirst));
             String s;
             for (int i = 10; i >=0; i--)
             {
@@ -85,19 +86,22 @@ namespace TenBet
 
         public void AddRandomLiveEvent(IWebDriver driver, WebDriverWait wait)
         {
-            wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("#_me_highlights_1>td.bet_name>a:nth-child(1)>span.num_right")));
+            wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".live_betting_table tr[id^=me_]")));
             String s;
-            for (int i = 10; i >= 0; i--)
+
+            ///CHANGE IT!!!!
+            for (int i = 50; i >= 0; i--)
             {
                 try
                 {
-                    s = "#_me_highlights_" + rnd.Next(0, i) + ">td.bet_name>a:nth-child(" + rnd.Next(1, 2).ToString() + ")>span.num_right";
+                    s = "#me_" + rnd.Next(0, i) + ">td.bet_name>a:nth-child(" + rnd.Next(1, 2).ToString() + ")>span.num_right";
                     driver.FindElement(By.CssSelector(s)).Click();
                     break;
                 }
                 catch
                 { }
             }
+            //////
         }
 
         public void PlaceStake(IWebDriver driver, WebDriverWait wait, decimal stake) {
@@ -109,10 +113,6 @@ namespace TenBet
         public string WaitForStakeStatus(IWebDriver driver, WebDriverWait wait)
         {
             wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(betrally.betSlipStatus)));
-            do
-            {
-                ;
-            }
             while (betrally.betSlipStatusElement.Text.Contains("aiting"));
             return betrally.betSlipStatusElement.Text;
         }
@@ -128,6 +128,31 @@ namespace TenBet
             //string s="s";
             wait.Until(d => GetBalance(driver,action,wait)!=balance);
             return GetBalance(driver, action, wait);
+        }
+        public bool IsElementPresentBy(IWebDriver driver ,By by)
+        {
+            try
+            {
+                driver.FindElement(by);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool IsElementPresentElement(IWebDriver driver,By by)
+        {
+         //   var s = element;
+            try
+            {
+                driver.FindElement(by);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
     }
