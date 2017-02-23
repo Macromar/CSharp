@@ -125,7 +125,6 @@ namespace TenBet
         }
         public decimal ChangedBalance(IWebDriver driver, WebDriverWait wait, OpenQA.Selenium.Interactions.Actions action, decimal balance, decimal stake)
         {
-            //string s="s";
             wait.Until(d => GetBalance(driver,action,wait)!=balance);
             return GetBalance(driver, action, wait);
         }
@@ -141,19 +140,11 @@ namespace TenBet
                 return false;
             }
         }
-        public bool IsElementPresentElement(IWebDriver driver,By by)
+        public void WaitForElementBy(IWebDriver driver, WebDriverWait wait, By element)
         {
-         //   var s = element;
-            try
-            {
-                driver.FindElement(by);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            wait.Until(ExpectedConditions.ElementIsVisible(element));
         }
+      
 
     }
     public class Configuration {

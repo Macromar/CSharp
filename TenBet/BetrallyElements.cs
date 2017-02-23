@@ -36,5 +36,6 @@ namespace TenBet
         public By highlightFirst = By.CssSelector("#_me_highlights_1>td.bet_name>a:nth-child(1)>span.num_right");
         public By betslipOverlayBy = By.CssSelector("#bet-slip-container > li[id^=sce] div.overlay");
         public By betslipCloseBy = By.CssSelector("#bet-slip-container > li[id^=sce] >img.close");
+        public By betslipBettingDetailsBy = By.CssSelector("#bet-slip-container > li[id^=sce] div.bettingDetails");
     }
 }
