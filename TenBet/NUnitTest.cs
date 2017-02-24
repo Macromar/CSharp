@@ -12,6 +12,7 @@ namespace TenBet
         public static IWebDriver driver;
         public MainPage mainPage = new MainPage();
         public BetrallyElements betrally = new BetrallyElements();
+        public Configuration config = new Configuration();
 
         decimal stake;
         public OpenQA.Selenium.Interactions.Actions action;
@@ -39,8 +40,9 @@ namespace TenBet
         [Test]
         public void PlaceHighlightBetAndCheckBalance()
         {
-       //     PageFactory.InitElements(driver, betrally);
-            stake = decimal.Parse(MainPage.conf.items["Stake"]);
+            //     PageFactory.InitElements(driver, betrally);
+            //     stake = decimal.Parse(MainPage.conf.items["Stake"]);
+            stake = decimal.Parse(config.GetConfigValue("Stake"));
             MainPage.Login(driver);
             decimal sportBalance = mainPage.GetBalance(driver, action, wait10);
             mainPage.AddRandomHighlightEvent(driver, wait10);

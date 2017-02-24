@@ -60,11 +60,15 @@ namespace TenBet
         }
         public decimal GetBalance(IWebDriver driver, OpenQA.Selenium.Interactions.Actions action, WebDriverWait wait)
         {
-            wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".serviceArea.loggedin>.btn.withArrow")));
-            var elements = driver.FindElements(By.CssSelector(".serviceArea.loggedin>.btn.withArrow"));
-            action.MoveToElement(elements[1]).Click().Perform();
-            do {
-            } while (betrally.headerSportsBalanceDrop.Text.Length == 0);
+            wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".serviceArea.loggedin>.btn.withArrow[data-dropdown='balance']")));
+
+            try
+            {
+                driver.FindElement(By.CssSelector(".serviceArea.loggedin>.btn.withArrow[data-dropdown='balance']")).Click();
+            }
+            catch { }
+
+            while (betrally.headerSportsBalanceDrop.Text.Length == 0);
             return decimal.Parse(Regex.Replace(betrally.headerSportsBalanceDrop.Text, "[^0-9.]", ""));
         }
         public void AddRandomHighlightEvent(IWebDriver driver, WebDriverWait wait)
@@ -158,6 +162,11 @@ namespace TenBet
                 string json = r.ReadToEnd();
                 items = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
             }
+        }
+        public string GetConfigValue(string s)
+        {
+            return MainPage.conf.items[s];
+            
         }
     }
 
