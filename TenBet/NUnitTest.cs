@@ -1,14 +1,20 @@
-﻿using System;
+﻿using NUnit.Framework;
 using OpenQA.Selenium;
-using NUnit.Framework;
-using OpenQA.Selenium.Support.UI;
-using System.Threading;
 using OpenQA.Selenium.Support.PageObjects;
+using OpenQA.Selenium.Support.UI;
+using RelevantCodes.ExtentReports;
+using System;
+using System.IO;
+using System.Reflection;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace TenBet
 {
     public class NUnitTest
     {
+
+        public ExtentReports extent;
         public static IWebDriver driver;
         public MainPage mainPage = new MainPage();
         public BetrallyElements betrally = new BetrallyElements();
@@ -17,14 +23,13 @@ namespace TenBet
         decimal stake;
         public OpenQA.Selenium.Interactions.Actions action;
         WebDriverWait wait10;
-   /*     public NUnitTest()
+
+        public object OutputType { get; private set; }
+
+        public NUnitTest()
         {
-            driver = mainPage.driverInit();
-            action = new OpenQA.Selenium.Interactions.Actions(driver);
-            wait10 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-         //   PageFactory.InitElements(driver, betrally);
+            extent = new ExtentReports("Results\\Extent.html", false, DisplayOrder.OldestFirst);
         }
-     */   
 
         [SetUp]
         public void Initialize()
@@ -40,8 +45,6 @@ namespace TenBet
         [Test]
         public void PlaceHighlightBetAndCheckBalance()
         {
-            //     PageFactory.InitElements(driver, betrally);
-            //     stake = decimal.Parse(MainPage.conf.items["Stake"]);
             stake = decimal.Parse(config.GetConfigValue("Stake"));
             MainPage.Login(driver);
             decimal sportBalance = mainPage.GetBalance(driver, action, wait10);
@@ -107,36 +110,50 @@ namespace TenBet
                 Assert.Fail();
         }
         [Test]
-        [Ignore("is not a test, just template")]
+  //      [Ignore("is not a test, just template")]
         public void BugFixing()
         {
-            stake = decimal.Parse(MainPage.conf.items["Stake"]);
-            MainPage.Login(driver);
-
-            IJavaScriptExecutor js = (IJavaScriptExecutor) driver;
-          
-            while (true)
+            ITakesScreenshot shot = (ITakesScreenshot)driver;
+            DateTime localDate = DateTime.Now;
+            string img;
+            string s="45";
+            ExtentTest test = extent.StartTest("Start Test"); ;
+            try
             {
 
-                mainPage.AddRandomLiveEvent(driver, wait10);
-                mainPage.WaitForElementBy(driver, wait10,betrally.betslipBettingDetailsBy);
-                if (mainPage.IsElementPresentBy(driver, betrally.betslipOverlayBy ))
-                {
-                     var elements = js.ExecuteScript("arguments[0].click();", betrally.betslipClose);
+                s = Regex.Replace(localDate.ToString(), "[\\/.,: ]", "");
+                s = "images\\" + s + ".Jpeg";
+                test.AssignCategory("Regression");
+                test.Log(LogStatus.Info, test.GetTest().ToString());
+                test.Log(LogStatus.Info, "Some Info");
+                shot.GetScreenshot().SaveAsFile("Results\\" + s, ScreenshotImageFormat.Jpeg);
+                img = test.AddScreenCapture(s);
+                test.Log(LogStatus.Info, "image description" + img);
+                //extent.EndTest(test);
+                s = Regex.Replace(localDate.ToString(), "[\\/.,: ]", "");
+                s = "images\\" + s + ".Jpeg";
+                driver.FindElement(By.Id("fgdfg")).Click();
 
-                }
-                else
-                {
-                    break;
-                }
             }
-            
+            catch (Exception ex)
+            {
+                test.Log(LogStatus.Info, "Stack trace is:        " + Environment.StackTrace);
+                test.Log(LogStatus.Info, ex.Message);
+
+                if (TestContext.CurrentContext.Test.Name == "BugFixing")
+                {
+                }
+                
+                extent.EndTest(test);
+                extent.Flush();
+            }
 
         }
 
 [TearDown]
         public void EndTest()
         {
+            
             driver.Quit();
         }
     }

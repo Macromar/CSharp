@@ -7,10 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using NUnit.Framework;
 
 namespace TenBet
 {
+    extern alias ble;
     public class MainPage
     {
         
@@ -61,13 +61,14 @@ namespace TenBet
         public decimal GetBalance(IWebDriver driver, OpenQA.Selenium.Interactions.Actions action, WebDriverWait wait)
         {
             wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".serviceArea.loggedin>.btn.withArrow[data-dropdown='balance']")));
-
-            try
+            do
             {
-                driver.FindElement(By.CssSelector(".serviceArea.loggedin>.btn.withArrow[data-dropdown='balance']")).Click();
+                try
+                {
+                    driver.FindElement(By.CssSelector(".serviceArea.loggedin>.btn.withArrow[data-dropdown='balance']")).Click();
+                }
+                catch { }
             }
-            catch { }
-
             while (betrally.headerSportsBalanceDrop.Text.Length == 0);
             return decimal.Parse(Regex.Replace(betrally.headerSportsBalanceDrop.Text, "[^0-9.]", ""));
         }
@@ -160,13 +161,13 @@ namespace TenBet
             using (StreamReader r = new StreamReader(@"D:\Auto\TenBet\TenBet\config.json"))
             {
                 string json = r.ReadToEnd();
-                items = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+                items = ble::Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
             }
         }
         public string GetConfigValue(string s)
         {
             return MainPage.conf.items[s];
-            
+          
         }
     }
 
